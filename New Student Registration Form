@@ -1,0 +1,125 @@
+from tkinter import *
+import pymongo
+class student:
+    def __init__(self,window):
+        self.window = window
+        window.title("New Student Registration Form")
+        window.geometry("500x500")
+        window.configure(bg="Blue")
+        self.idnumber = StringVar()
+        self.name = StringVar()
+        self.gender = StringVar()
+        self.qualification = StringVar()
+        self.dob = StringVar()
+        self.address = StringVar()
+        self.phone = StringVar()
+        self.email = StringVar()
+        self.course = StringVar()
+        self.exp = StringVar()
+        l1 = Label(window, text="ID Number", width=20, height=3, bg="pink")
+        l1.grid(row=0, column=0)
+        e1 = Entry(window, width=10, textvariable=self.idnumber, bg="pink")
+        e1.grid(row=0, column=1)
+        l2 = Label(window, text="Name", width=20, height=3, bg="pink")
+        l2.grid(row=0, column=3)
+        e2 = Entry(window, width=10, textvariable=self.name, bg="pink")
+        e2.grid(row=0, column=4)
+        l3 = Label(window, text="Gender", width=20, height=3, bg="yellow")
+        l3.grid(row=1, column=0)
+        e3 = Entry(window, width=10, textvariable=self.gender, bg="light pink")
+        e3.grid(row=1, column=1)
+        l4 = Label(window, text="Qualification", width=20, height=3, bg="yellow")
+        l4.grid(row=1, column=3)
+        e4 = Entry(window, width=10, textvariable=self.qualification, bg="light pink")
+        e4.grid(row=1, column=4)
+        l5 = Label(window, text="Address", width=20, height=3, bg="light pink")
+        l5.grid(row=2, column=0)
+        e5 = Entry(window, width=10, textvariable=self.address, bg="light pink")
+        e5.grid(row=2, column=1)
+        l6 = Label(window, text="Phone", width=20, height=3, bg="light pink")
+        l6.grid(row=2, column=3)
+        e6 = Entry(window, width=10, textvariable=self.phone, bg="light pink")
+        e6.grid(row=2, column=4)
+        l7 = Label(window, text="Email", width=20, height=3, bg="yellow")
+        l7.grid(row=3, column=0)
+        e7 = Entry(window, width=10, textvariable=self.email, bg="light pink")
+        e7.grid(row=3, column=1)
+        l8 = Label(window, text="Course", width=20, height=3, bg="yellow")
+        l8.grid(row=3, column=3)
+        e8 = Entry(window, width=10, textvariable=self.course, bg="light pink")
+        e8.grid(row=3, column=4)
+        l9 = Label(window, text="Experience", width=20, height=3, bg="light pink")
+        l9.grid(row=4, column=0)
+        e9 = Entry(window, width=10, textvariable=self.exp, bg="light pink")
+        e9.grid(row=4, column=1)
+        l10 = Label(window, text="DOB", width=20, height=3, bg="light pink")
+        l10.grid(row=4, column=3)
+        e10 = Entry(window, width=10, textvariable=self.dob, bg="light pink")
+        e10.grid(row=4, column=4)
+        b1 = Button(window, text="SUBMIT", command=self.enroll, bg="green")
+        b1.grid(row=10, column=0)
+        b2 = Button(window, text="UPDATE", command=self.update_info, bg="yellow")
+        b2.grid(row=10, column=2)
+        b3 = Button(window, text="DELETE", command=self.delete_info, bg="red")
+        b3.grid(row=10, column=4)
+    def enroll(self):
+        client = pymongo.MongoClient("mongodb://localhost:27017")
+        db = client["holymary_db"]
+        coll = db["student_details"]
+        data = [
+            {
+                "idnumber": self.idnumber.get(),
+                "name": self.name.get(),
+                "gender": self.gender.get(),
+                "qualification": self.qualification.get(),
+                "address": self.address.get(),
+                "phone": self.phone.get(),
+                "email": self.email.get(),
+                "course": self.course.get(),
+                "exp": self.exp.get(),
+                "dob": self.dob.get(),
+
+            }
+        ]
+
+        x = coll.insert_many(data)
+        print(
+            "data has been inserted into desired collection, respective primary keys:\n",
+            x.inserted_ids,
+        )
+        self.clear()
+    def update_info(self):
+        client = pymongo.MongoClient("mongodb://localhost:27017")
+        db = client["employee_db"]
+        coll = db["employee_details"]
+        query = {"idnumber": self.idnumber.get()}
+        new_values = {"$set": {"name": self.name.get()}}
+        coll.update_one(query, new_values)
+        for x in coll.find():
+            print("ur updated data:\n", x)
+        self.clear()
+    def delete_info(self):
+        client = pymongo.MongoClient("mongodb://localhost:27017")
+        db = client["employee_db"]
+        coll = db["employee_details"]
+        query = {"eposition": self.position.get()}
+        coll.delete_one(query)
+        print("ur record has been deleted")
+        for x in coll.find():
+            print("ur desired record deleted successfully:\n", x)
+        self.clear()
+    def clear(self):
+        self.name.set("")
+        self.gender.set("")
+        self.idnumber.set("")
+        self.qualification.set("")
+        self.email.set("")
+        self.dob.set("")
+        self.address.set("")
+        self.phone.set("")
+        self.course.set("")
+        self.exp.set("")
+
+window = Tk()
+student(window)
+window.mainloop()
