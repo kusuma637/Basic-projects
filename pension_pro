@@ -1,0 +1,37 @@
+from tkinter import *
+from tkinter import messagebox
+
+window=Tk()
+window.title("COVID-19")
+window.config(bg="light pink")
+window.geometry("600x900")
+
+
+#user defined function
+def covid_19():
+    temperature=int(e1.get())
+    cough = int(e2.get())
+    breathing = int(e3.get())
+    if temperature>=98 and cough>=90 and breathing>=60:
+        messagebox.showinfo("COVID-19","You are at risk of COVID-19")
+    else:
+        messagebox.showinfo("COVID-19","You are not at risk of COVID-19")
+
+#create a label for temperature mount to be enter
+l1=Label(window,text="TEMPERATURE:",font=90)
+l1.grid(row=0,column=0)
+e1=Entry(window)
+e1.grid(row=0,column=1)
+l2=Label(window,text="COUGH:",font=90)
+l2.grid(row=1,column=0)
+e2=Entry(window)
+e2.grid(row=1,column=1)
+l3=Label(window,text="BREATHING:",font=90)
+l3.grid(row=2,column=0)
+e3=Entry(window)
+e3.grid(row=2,column=1)
+
+b1=Button(window,text="COVID-19",command=covid_19)
+b1.grid(row=3,column=1)
+
+window.mainloop()
